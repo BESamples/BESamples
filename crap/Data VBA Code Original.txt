@@ -1,0 +1,33 @@
+Date VBA CODE
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim cell As Range
+    Dim watchRange As Range
+
+    ' Only watch Column B rows 2–100
+    Set watchRange = Me.Range("B2:B100")
+
+    If Intersect(Target, watchRange) Is Nothing Then Exit Sub
+
+    Application.EnableEvents = False
+    On Error GoTo SafeExit
+
+    For Each cell In Intersect(Target, watchRange)
+        If cell.Value <> "" Then
+            ' Write today's date if empty
+            If Me.Cells(cell.Row, "A").Value = "" Then
+                Me.Cells(cell.Row, "A").Value = Date
+            End If
+
+            If Me.Cells(cell.Row, "I").Value = "" Then
+                Me.Cells(cell.Row, "I").Value = Date
+            End If
+        Else
+            ' Clear dates if Column B is cleared
+            Me.Cells(cell.Row, "A").ClearContents
+            Me.Cells(cell.Row, "I").ClearContents
+        End If
+    Next cell
+
+SafeExit:
+    Application.EnableEvents = True
+End Sub
